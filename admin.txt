@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bonnie the Animatronic</title>
+</head>
+<body>
+  <h1>🎤 Talk to Bonnie</h1>
+  <button onclick="startListening()">Talk to Bonnie</button>
+  <p id="transcript"></p>
+  <p><strong>Bonnie says:</strong> <span id="bonnieResponse"></span></p>
+
+  <script>
+    function startListening() {
+      const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const userText = event.results[0][0].transcript;
+        document.getElementById("transcript").innerText = "You: " + userText;
+
+        fetch('/bonnie', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_input: userText })
+        })
+        .then(res => res.json())
+        .then(data => {
+          const response = data.bonnie_response;
+          document.getElementById("bonnieResponse").innerText = response;
+          const speech = new SpeechSynthesisUtterance(response);
+          speech.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google") || voice.name.includes("English"));
+          speechSynthesis.speak(speech);
+        });
+      };
+    }
+  </script>
+</body>
+</html>

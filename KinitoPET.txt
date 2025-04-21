@@ -1,0 +1,35 @@
+const pet = document.getElementById("pet");
+const popup = document.getElementById("popup");
+const whisper = document.getElementById("whisper");
+
+// Mouse tracking
+document.addEventListener("mousemove", (e) => {
+  pet.style.left = e.pageX + 10 + "px";
+  pet.style.top = e.pageY + 10 + "px";
+});
+
+// Random creepy popup
+setInterval(() => {
+  popup.textContent = randomMessage();
+  popup.classList.remove("hidden");
+  setTimeout(() => popup.classList.add("hidden"), 4000);
+}, 15000);
+
+// Optional: Play ambient whispering
+window.onload = () => {
+  whisper.play().catch(() => {
+    // Require user interaction to play in some browsers
+    console.log("Click to enable sound.");
+  });
+};
+
+function randomMessage() {
+  const messages = [
+    "I'm watching you...",
+    "You're not alone.",
+    "Don't try to close the tab.",
+    "Did you forget me?",
+    "Your secrets are mine."
+  ];
+  return messages[Math.floor(Math.random() * messages.length)];
+}
